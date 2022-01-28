@@ -1,5 +1,7 @@
 # `secp256k1` Library - Craig S. Wrong's Fork
 
+Swift Package Manager (SPM) and Docker version of the original Bitcoin Core elliptic curve library.
+
 ## Why fork?
 
 I forked the original Bitcoin Core's library to add:
