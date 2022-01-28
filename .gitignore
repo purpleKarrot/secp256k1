@@ -56,3 +56,14 @@ build-aux/compile
 build-aux/test-driver
 src/stamp-h1
 libsecp256k1.pc
+
+.DS_Store
+/.gitconfig/user
+xcuserdata/
+/dist.docker
+/dist.macos.x86_64
+/dist.macos.arm64
+/dist.macos
+/*.xcframework
+/*.xcframework.zip
+/Package.swift
