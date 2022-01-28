@@ -65,3 +65,14 @@ libsecp256k1.pc
 /CMakeUserPresets.json
 # Default CMake build directory.
 /build
+
+.DS_Store
+/.gitconfig/user
+xcuserdata/
+/dist.docker
+/dist.macos.x86_64
+/dist.macos.arm64
+/dist.macos
+/*.xcframework
+/*.xcframework.zip
+/Package.swift
