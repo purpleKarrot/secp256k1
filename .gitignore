@@ -76,3 +76,4 @@ xcuserdata/
 /*.xcframework
 /*.xcframework.zip
 /Package.swift
+/.build/

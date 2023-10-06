@@ -13,7 +13,7 @@ set -e
     --enable-module-extrakeys --enable-module-schnorrsig \
     --disable-module-recovery --disable-module-ecdh \
     --host=x86_64-apple-darwin \
-    CFLAGS="-O3 -arch x86_64 -fembed-bitcode -mmacosx-version-min=12.0"
+    CFLAGS="-O3 -arch x86_64 -fembed-bitcode -mmacosx-version-min=14.0"
 make check
 make install
 
@@ -25,7 +25,7 @@ make clean
     --enable-module-extrakeys --enable-module-schnorrsig \
     --disable-module-recovery --disable-module-ecdh \
     --host=arm64-apple-darwin \
-    CFLAGS="-O3 -arch arm64 -fembed-bitcode -mmacosx-version-min=12.0"
+    CFLAGS="-O3 -arch arm64 -fembed-bitcode -mmacosx-version-min=14.0"
 make install
 
 ### Creating an XCFramework
