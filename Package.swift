@@ -5,11 +5,11 @@ import PackageDescription
 let package = Package(
     name: "secp256k1",
     products: [
-        .library(name: "SECP256k1", targets: ["SECP256k1"]),
+        .library(name: "LibSECP256k1", targets: ["LibSECP256k1"]),
     ],
     targets: [
         .target(
-            name: "SECP256k1PreComputed",
+            name: "LibSECP256k1PreComputed",
             path: "src",
             sources: ["precomputed_ecmult.c", "precomputed_ecmult_gen.c"],
             publicHeadersPath: "include-precomputed",
@@ -18,7 +18,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "SECP256k1",
+            name: "LibSECP256k1",
             dependencies: ["SECP256k1PreComputed"],
             path: "src",
             sources: ["secp256k1.c"],
@@ -33,8 +33,8 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "SECP256k1Tests",
-            dependencies: ["SECP256k1PreComputed"],
+            name: "LibSECP256k1Tests",
+            dependencies: ["LibSECP256k1PreComputed"],
             path: "src",
             sources: ["tests.c"],
             cSettings: [
