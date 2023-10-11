@@ -19,7 +19,7 @@ let package = Package(
         ),
         .target(
             name: "LibSECP256k1",
-            dependencies: ["SECP256k1PreComputed"],
+            dependencies: ["LibSECP256k1PreComputed"],
             path: "src",
             sources: ["secp256k1.c"],
             publicHeadersPath: "include",
