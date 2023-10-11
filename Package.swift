@@ -11,7 +11,7 @@ let package = Package(
         .target(
             name: "libsecp256k1",
             path: "src",
-            exclude: ["asm/", "bench.c", "bench_internal.c", "bench_ecmult.c", "ctime_tests.c", "tests.c", "tests_exhaustive.c", /*"precomputed_ecmult.c", "precomputed_ecmult.c",*/ "precompute_ecmult_gen.c", /*"precomputed_ecmult_gen.c"*/],
+            exclude: ["asm/", "bench.c", "bench_internal.c", "bench_ecmult.c", "ctime_tests.c", "tests.c", "tests_exhaustive.c", "precompute_ecmult.c", "precompute_ecmult_gen.c", /*"precomputed_ecmult.c", "precomputed_ecmult_gen.c"*/],
             cSettings: [
                 // Basic config values that are universal and require no dependencies.
                 //.define("ECMULT_GEN_PREC_BITS", to: "4"),
