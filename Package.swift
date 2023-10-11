@@ -5,24 +5,47 @@ import PackageDescription
 let package = Package(
     name: "secp256k1",
     products: [
-        .library(name: "secp256k1", targets: ["libsecp256k1"]),
+        .library(name: "SECP256k1", targets: ["SECP256k1"]),
     ],
     targets: [
         .target(
-            name: "libsecp256k1",
+            name: "SECP256k1PreComputed",
             path: "src",
-            exclude: ["asm/", "bench.c", "bench_internal.c", "bench_ecmult.c", "ctime_tests.c", "tests.c", "tests_exhaustive.c", "precompute_ecmult.c", "precompute_ecmult_gen.c", /*"precomputed_ecmult.c", "precomputed_ecmult_gen.c"*/],
+            sources: ["precomputed_ecmult.c", "precomputed_ecmult_gen.c"],
+            publicHeadersPath: "include-precomputed",
             cSettings: [
-                // Basic config values that are universal and require no dependencies.
-                //.define("ECMULT_GEN_PREC_BITS", to: "4"),
-                //.define("ECMULT_WINDOW_SIZE", to: "15"),
-                // Enabling additional secp256k1 modules.
+                .define("SECP256K1_BUILD", to: ""),
+            ]
+        ),
+        .target(
+            name: "SECP256k1",
+            dependencies: ["SECP256k1PreComputed"],
+            path: "src",
+            sources: ["secp256k1.c"],
+            publicHeadersPath: "include",
+            cSettings: [
+                .define("SECP256K1_BUILD", to: ""),
                 .define("ENABLE_MODULE_ECDH"),
+                .define("ENABLE_MODULE_RECOVERY"),
                 .define("ENABLE_MODULE_EXTRAKEYS"),
                 .define("ENABLE_MODULE_SCHNORRSIG"),
                 .define("ENABLE_MODULE_ELLSWIFT"),
             ]
         ),
+        .executableTarget(
+            name: "SECP256k1Tests",
+            dependencies: ["SECP256k1PreComputed"],
+            path: "src",
+            sources: ["tests.c"],
+            cSettings: [
+                .define("SECP256K1_BUILD", to: ""),
+                .define("ENABLE_MODULE_ECDH"),
+                .define("ENABLE_MODULE_RECOVERY"),
+                .define("ENABLE_MODULE_EXTRAKEYS"),
+                .define("ENABLE_MODULE_SCHNORRSIG"),
+                .define("ENABLE_MODULE_ELLSWIFT"),
+            ]
+        )
     ],
     cLanguageStandard: .c89
 )
