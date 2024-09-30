@@ -67,7 +67,7 @@ static void test_exhaustive_endomorphism(const secp256k1_ge *group) {
     for (i = 0; i < EXHAUSTIVE_TEST_ORDER; i++) {
         secp256k1_ge res;
         secp256k1_ge_mul_lambda(&res, &group[i]);
-        ge_equals_ge(&group[i * EXHAUSTIVE_TEST_LAMBDA % EXHAUSTIVE_TEST_ORDER], &res);
+        CHECK(secp256k1_ge_eq_var(&group[i * EXHAUSTIVE_TEST_LAMBDA % EXHAUSTIVE_TEST_ORDER], &res));
     }
 }
 
@@ -93,21 +93,21 @@ static void test_exhaustive_addition(const secp256k1_ge *group, const secp256k1_
             secp256k1_gej tmp;
             /* add_var */
             secp256k1_gej_add_var(&tmp, &groupj[i], &groupj[j], NULL);
-            ge_equals_gej(&group[(i + j) % EXHAUSTIVE_TEST_ORDER], &tmp);
+            CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i + j) % EXHAUSTIVE_TEST_ORDER]));
             /* add_ge */
             if (j > 0) {
                 secp256k1_gej_add_ge(&tmp, &groupj[i], &group[j]);
-                ge_equals_gej(&group[(i + j) % EXHAUSTIVE_TEST_ORDER], &tmp);
+                CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i + j) % EXHAUSTIVE_TEST_ORDER]));
             }
             /* add_ge_var */
             secp256k1_gej_add_ge_var(&tmp, &groupj[i], &group[j], NULL);
-            ge_equals_gej(&group[(i + j) % EXHAUSTIVE_TEST_ORDER], &tmp);
+            CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i + j) % EXHAUSTIVE_TEST_ORDER]));
             /* add_zinv_var */
             zless_gej.infinity = groupj[j].infinity;
             zless_gej.x = groupj[j].x;
             zless_gej.y = groupj[j].y;
             secp256k1_gej_add_zinv_var(&tmp, &groupj[i], &zless_gej, &fe_inv);
-            ge_equals_gej(&group[(i + j) % EXHAUSTIVE_TEST_ORDER], &tmp);
+            CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i + j) % EXHAUSTIVE_TEST_ORDER]));
         }
     }
 
@@ -115,9 +115,9 @@ static void test_exhaustive_addition(const secp256k1_ge *group, const secp256k1_
     for (i = 0; i < EXHAUSTIVE_TEST_ORDER; i++) {
         secp256k1_gej tmp;
         secp256k1_gej_double(&tmp, &groupj[i]);
-        ge_equals_gej(&group[(2 * i) % EXHAUSTIVE_TEST_ORDER], &tmp);
+        CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(2 * i) % EXHAUSTIVE_TEST_ORDER]));
         secp256k1_gej_double_var(&tmp, &groupj[i], NULL);
-        ge_equals_gej(&group[(2 * i) % EXHAUSTIVE_TEST_ORDER], &tmp);
+        CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(2 * i) % EXHAUSTIVE_TEST_ORDER]));
     }
 
     /* Check negation */
@@ -125,9 +125,9 @@ static void test_exhaustive_addition(const secp256k1_ge *group, const secp256k1_
         secp256k1_ge tmp;
         secp256k1_gej tmpj;
         secp256k1_ge_neg(&tmp, &group[i]);
-        ge_equals_ge(&group[EXHAUSTIVE_TEST_ORDER - i], &tmp);
+        CHECK(secp256k1_ge_eq_var(&tmp, &group[EXHAUSTIVE_TEST_ORDER - i]));
         secp256k1_gej_neg(&tmpj, &groupj[i]);
-        ge_equals_gej(&group[EXHAUSTIVE_TEST_ORDER - i], &tmpj);
+        CHECK(secp256k1_gej_eq_ge_var(&tmpj, &group[EXHAUSTIVE_TEST_ORDER - i]));
     }
 }
 
@@ -144,8 +144,7 @@ static void test_exhaustive_ecmult(const secp256k1_ge *group, const secp256k1_ge
                 secp256k1_scalar_set_int(&ng, j);
 
                 secp256k1_ecmult(&tmp, &groupj[r_log], &na, &ng);
-                ge_equals_gej(&group[(i * r_log + j) % EXHAUSTIVE_TEST_ORDER], &tmp);
-
+                CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i * r_log + j) % EXHAUSTIVE_TEST_ORDER]));
             }
         }
     }
@@ -163,7 +162,7 @@ static void test_exhaustive_ecmult(const secp256k1_ge *group, const secp256k1_ge
 
             /* Test secp256k1_ecmult_const. */
             secp256k1_ecmult_const(&tmp, &group[i], &ng);
-            ge_equals_gej(&group[(i * j) % EXHAUSTIVE_TEST_ORDER], &tmp);
+            CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i * j) % EXHAUSTIVE_TEST_ORDER]));
 
             if (i != 0 && j != 0) {
                 /* Test secp256k1_ecmult_const_xonly with all curve X coordinates, and xd=NULL. */
@@ -172,7 +171,7 @@ static void test_exhaustive_ecmult(const secp256k1_ge *group, const secp256k1_ge
                 CHECK(secp256k1_fe_equal(&tmpf, &group[(i * j) % EXHAUSTIVE_TEST_ORDER].x));
 
                 /* Test secp256k1_ecmult_const_xonly with all curve X coordinates, with random xd. */
-                random_fe_non_zero(&xd);
+                testutil_random_fe_non_zero(&xd);
                 secp256k1_fe_mul(&xn, &xd, &group[i].x);
                 ret = secp256k1_ecmult_const_xonly(&tmpf, &xn, &xd, &ng, 0);
                 CHECK(ret);
@@ -215,7 +214,7 @@ static void test_exhaustive_ecmult_multi(const secp256k1_context *ctx, const sec
                         data.pt[1] = group[y];
 
                         secp256k1_ecmult_multi_var(&ctx->error_callback, scratch, &tmp, &g_sc, ecmult_multi_callback, &data, 2);
-                        ge_equals_gej(&group[(i * x + j * y + k) % EXHAUSTIVE_TEST_ORDER], &tmp);
+                        CHECK(secp256k1_gej_eq_ge_var(&tmp, &group[(i * x + j * y + k) % EXHAUSTIVE_TEST_ORDER]));
                     }
                 }
             }
@@ -376,7 +375,7 @@ int main(int argc, char** argv) {
     printf("test count = %i\n", count);
 
     /* find random seed */
-    secp256k1_testrand_init(argc > 2 ? argv[2] : NULL);
+    testrand_init(argc > 2 ? argv[2] : NULL);
 
     /* set up split processing */
     if (argc > 4) {
@@ -390,13 +389,13 @@ int main(int argc, char** argv) {
     }
 
     /* Recreate the ecmult{,_gen} tables using the right generator (as selected via EXHAUSTIVE_TEST_ORDER) */
-    secp256k1_ecmult_gen_compute_table(&secp256k1_ecmult_gen_prec_table[0][0], &secp256k1_ge_const_g, ECMULT_GEN_PREC_BITS);
+    secp256k1_ecmult_gen_compute_table(&secp256k1_ecmult_gen_prec_table[0][0], &secp256k1_ge_const_g, COMB_BLOCKS, COMB_TEETH, COMB_SPACING);
     secp256k1_ecmult_compute_two_tables(secp256k1_pre_g, secp256k1_pre_g_128, WINDOW_G, &secp256k1_ge_const_g);
 
     while (count--) {
         /* Build context */
         ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
-        secp256k1_testrand256(rand32);
+        testrand256(rand32);
         CHECK(secp256k1_context_randomize(ctx, rand32));
 
         /* Generate the entire group */
@@ -409,7 +408,7 @@ int main(int argc, char** argv) {
                 /* Set a different random z-value for each Jacobian point, except z=1
                    is used in the last iteration. */
                 secp256k1_fe z;
-                random_fe(&z);
+                testutil_random_fe(&z);
                 secp256k1_gej_rescale(&groupj[i], &z);
             }
 
@@ -460,7 +459,7 @@ int main(int argc, char** argv) {
         secp256k1_context_destroy(ctx);
     }
 
-    secp256k1_testrand_finish();
+    testrand_finish();
 
     printf("no problems found\n");
     return 0;
