@@ -6,14 +6,33 @@ Swift Package Manager (SPM) and Docker version of the original Bitcoin Core elli
 
 I forked the original Bitcoin Core's library to add:
 
+ - A `Package.swift` package manifest for integration into Swift projects using SPM.
  - A `Dockerfile` with build procedures for various configurations.
- - A shell script to target macOS and package as XCFramework.
+ - A `macos-xcframework-build.sh` shell script to build targetting macOS and package as XCFramework.
+ - This README file.
 
 This way the library can be used in Swift projects using Swift Package Manager (SPM) on both Mac and Linux platforms.
 
 PRs welcome. If you need to contact me just DM me at `twitter.com/notcraigwright`.
 
 ## Usage
+
+### As source package
+
+Use as a normal Swift Package:
+
+```swift
+Package( …
+    // Add it to the package dependencies
+    dependencies: [
+        .package(url: "https://github.com/swift-bitcoin/secp256k1", from: "0.0.0") …
+    // Add it to individual targets
+    targets: {
+        .target(… dependencies: [
+            .product(name: "LibSECP256k1", package: "secp256k1") …
+```
+
+### As binary target
 
 Add a binary target to your `Package.swift`. Use the `XCFramework` ZIP file attached to an specific [release](https://github.com/craigwrong/secp256k1/releases). Also attached is the corresponding checksum needed for the binary target.
 
