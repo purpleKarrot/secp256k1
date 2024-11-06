@@ -30,6 +30,7 @@ let package = Package(
                 .define("ENABLE_MODULE_EXTRAKEYS"),
                 .define("ENABLE_MODULE_SCHNORRSIG"),
                 .define("ENABLE_MODULE_ELLSWIFT"),
+                .define("ENABLE_MODULE_MUSIG")
             ]
         ),
         .executableTarget(
@@ -44,8 +45,9 @@ let package = Package(
                 .define("ENABLE_MODULE_EXTRAKEYS"),
                 .define("ENABLE_MODULE_SCHNORRSIG"),
                 .define("ENABLE_MODULE_ELLSWIFT"),
+                .define("ENABLE_MODULE_MUSIG")
             ]
         )
     ],
-    cLanguageStandard: .c89
+    cLanguageStandard: .c90
 )
